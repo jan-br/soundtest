@@ -40,40 +40,26 @@ public class SoundTestFixedAndPacketized {
     AtomicInteger i = new AtomicInteger();
 
     URL url = new URL(null, "memory:voicedata", new Handler());
+
     URLConnection urlConnection = url.openConnection();
     OutputStream outputStream = urlConnection.getOutputStream();
-    InputStream inputStream = urlConnection.getInputStream();
 
     System.out.println("Length " + data.available());
     executorService.scheduleWithFixedDelay(() -> {
       try {
-        byte[] chunk = new byte[Math.min(data.available(), 48000*10)];
-        if(chunk.length == 0) return;
-        i.getAndIncrement();
+        byte[] chunk = new byte[Math.min(data.available(), 48000)];
 
         data.read(chunk);
-
-        if (i.get() == 1) {
-          outputStream.write(rawToWave(chunk, 48000, 1, 16));
-        } else {
-          outputStream.write(chunk);
-        }
+        outputStream.write(rawToWave(chunk, 48000, 1, 16));
         outputStream.flush();
 
-        String source = "test";
-
-        if (i.get() == 1) {
-          soundSystem.newStreamingSource(true, source, url, source + ".wav", true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
-        }
-        if(soundSystem.playing("source")){
-          soundSystem.play(source);
-          System.out.println("Play");
-        }
+        soundSystem.unloadSound("test.wav");
+        soundSystem.quickPlay(true, url, "test.wav", false, 0, 0, 0, 0, 0);
 
       } catch (Exception ex) {
         ex.printStackTrace();
       }
-    }, 0, 50, TimeUnit.MILLISECONDS);
+    }, 0, 500, TimeUnit.MILLISECONDS);
 
   }
 

@@ -16,9 +16,6 @@ import java.net.URLConnection;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * I wrote a custom url protocol to be able to assign byte arrays via an URL and use normal sources.
@@ -29,8 +26,9 @@ public class SoundTestFixed {
 
   public static void main(String[] args) throws IOException, SoundSystemException {
     URL url = new URL(null, "memory:testaudio", new Handler());
-
     URLConnection urlConnection = url.openConnection();
+//    URL url = new URL("http://localhost/the_chainsmokers_closer.wav");
+
     OutputStream outputStream = urlConnection.getOutputStream();
 
     outputStream.write(rawToWave(IOUtils.toByteArray(Objects.requireNonNull(ClassLoader.getSystemClassLoader().getResourceAsStream("audio/raw/the_chainsmokers_closer.raw"))), 48000, 1, 16));
@@ -42,20 +40,22 @@ public class SoundTestFixed {
     SoundSystemConfig.setNumberNormalChannels(28);
 
     SoundSystem soundSystem = new SoundSystem();
-    soundSystem.newSource(
-            true, "test1", url, "test1.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
+    soundSystem.quickPlay(true, url, "test.wav", false, 0, 0, 0, 0, 0);
 
-    soundSystem.newSource(
-            true, "test2", url, "test2.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
-
-    ScheduledExecutorService executorService = Executors.newScheduledThreadPool(0);
-
-    soundSystem.play("test1");
-
-    executorService.schedule(() -> {
-      System.out.println("Start playing second song.");
-      soundSystem.play("test2");
-    }, 5, TimeUnit.SECONDS);
+//    soundSystem.newSource(
+//            true, "test1", url, "test1.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
+//
+//    soundSystem.newSource(
+//            true, "test2", url, "test2.wav", false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
+//
+//    ScheduledExecutorService executorService = Executors.newScheduledThreadPool(0);
+//
+//    soundSystem.play("test1");
+//
+//    executorService.schedule(() -> {
+//      System.out.println("Start playing second song.");
+//      soundSystem.play("test2");
+//    }, 5, TimeUnit.SECONDS);
 
   }
 

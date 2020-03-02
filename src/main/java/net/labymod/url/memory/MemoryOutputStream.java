@@ -19,10 +19,10 @@ public class MemoryOutputStream extends ByteArrayOutputStream {
 
   public void flush() throws IOException {
     super.flush();
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    byteArrayOutputStream.write(IOUtils.toByteArray(memoryInputStream));
-    byteArrayOutputStream.write(this.toByteArray());
-    byte[] bytes = byteArrayOutputStream.toByteArray();
+//    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//    byteArrayOutputStream.write(IOUtils.toByteArray(memoryInputStream));
+//    byteArrayOutputStream.write(this.toByteArray());
+    byte[] bytes = this.toByteArray();
     MemoryURLConnection.getData().get(url.getPath()).value = bytes;
     this.memoryInputStream.update(new ByteArrayInputStream(bytes));
     this.buf = new byte[]{};
