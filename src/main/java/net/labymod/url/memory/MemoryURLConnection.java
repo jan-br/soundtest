@@ -30,7 +30,7 @@ public class MemoryURLConnection extends URLConnection {
       data.put(this.getURL().getPath(), new ObjectHolder<>(new byte[]{}));
     }
     this.memoryInputStream = new MemoryInputStream(new ByteArrayInputStream(data.get(this.getURL().getPath()).value));
-    this.memoryOutputStream = new MemoryOutputStream(this.memoryInputStream);
+    this.memoryOutputStream = new MemoryOutputStream(this.getURL(), this.memoryInputStream);
     this.connected = true;
   }
 
@@ -42,5 +42,9 @@ public class MemoryURLConnection extends URLConnection {
   public MemoryOutputStream getOutputStream() {
     if (!this.connected) this.connect();
     return this.memoryOutputStream;
+  }
+
+  protected static Map<String, ObjectHolder<byte[]>> getData() {
+    return data;
   }
 }

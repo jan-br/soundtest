@@ -23,16 +23,6 @@ public class MemoryInputStream extends FilterInputStream {
     super(in);
   }
 
-
-  public int read(byte[] b, int off, int len) throws IOException {
-    for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
-      if (element.getClassName().contains("Test"))
-        return super.read(b, off, len);
-    }
-    int read = super.read(b, off, len);
-    return read;
-  }
-
   protected synchronized void update(InputStream in) {
     this.in = in;
   }
